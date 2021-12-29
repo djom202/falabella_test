@@ -358,4 +358,50 @@ describe('Cat Fact API', () => {
                 .and.be.equal(limit)
         })
     })
+
+    it('Checking parameters on breeds', () => {
+        const currentPage = 1 // getting an especific page
+        const limit = 10 // results per page
+
+        cy.request(`${domain}/breeds?limit=${limit}&page=${currentPage}`).then(
+            (response) => {
+                expect(response).property('status').to.equal(200)
+                expect(response.headers)
+                    .property('content-type')
+                    .to.equal('application/json')
+                expect(response.body).to.be.an('object')
+
+                expect(
+                    parseInt(response.headers['x-ratelimit-limit'])
+                ).to.equal(xRatelimitLimit)
+                expect(
+                    parseInt(response.headers['x-ratelimit-remaining'])
+                ).to.be.within(1, xRatelimitLimit)
+
+                // for debugging purposes in testing
+                cy.logDebug(response.body)
+
+                expect(response.body)
+                    .to.have.property('current_page')
+                    .to.be.a('number')
+                    .and.be.equal(currentPage)
+                expect(response.body)
+                    .to.have.property('data')
+                    .to.be.a('array')
+                    .and.be.length(limit)
+                expect(response.body)
+                    .to.have.property('per_page')
+                    .to.be.a('number')
+                    .and.be.equal(limit)
+                expect(response.body)
+                    .to.have.property('from')
+                    .to.be.a('number')
+                    .and.be.equal(currentPage == 1 ? currentPage : limit + 1)
+                expect(response.body)
+                    .to.have.property('to')
+                    .to.be.a('number')
+                    .and.be.equal(limit)
+            }
+        )
+    })
 })
