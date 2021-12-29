@@ -74,4 +74,101 @@ describe('Cat Fact API', () => {
             }
         )
     })
+
+    it('Get a list of cat facts', () => {
+        const max_length = 50
+        const limit = 10
+        const pages = 4
+        const currentPage = 1
+        const totalResutls = 33
+        let count = 1
+
+        cy.request(
+            `${domain}/facts?max_length=${max_length}&limit=${limit}`
+        ).then((response) => {
+            expect(response).property('status').to.equal(200)
+            expect(response.headers)
+                .property('content-type')
+                .to.equal('application/json')
+            expect(response.body).to.be.an('object')
+
+            expect(parseInt(response.headers['x-ratelimit-limit'])).to.equal(
+                xRatelimitLimit
+            )
+            expect(
+                parseInt(response.headers['x-ratelimit-remaining'])
+            ).to.be.within(1, xRatelimitLimit)
+
+            expect(response.body)
+                .to.have.property('current_page')
+                .to.be.a('number')
+                .and.be.equal(currentPage)
+            expect(response.body)
+                .to.have.property('data')
+                .to.be.a('array')
+                .and.be.length(limit)
+            expect(response.body)
+                .to.have.property('first_page_url')
+                .to.be.a('string')
+                .and.be.equal(`${domain}/facts?page=${currentPage}`)
+            expect(response.body)
+                .to.have.property('from')
+                .to.be.a('number')
+                .and.be.equal(currentPage)
+            expect(response.body)
+                .to.have.property('last_page')
+                .to.be.a('number')
+                .and.be.equal(pages)
+            expect(response.body)
+                .to.have.property('last_page_url')
+                .to.be.a('string')
+                .and.be.equal(`${domain}/facts?page=${pages}`)
+            expect(response.body)
+                .to.have.property('next_page_url')
+                .to.be.a('string')
+                .and.be.equal(`${domain}/facts?page=${currentPage + 1}`)
+            expect(response.body)
+                .to.have.property('path')
+                .to.be.a('string')
+                .and.be.equal(`${domain}/facts`)
+            expect(response.body)
+                .to.have.property('per_page')
+                .to.be.a('string')
+                .and.be.equal(limit.toString())
+            expect(response.body)
+                .to.have.property('prev_page_url')
+                .to.be.equal(null)
+            expect(response.body)
+                .to.have.property('to')
+                .to.be.a('number')
+                .and.be.equal(limit)
+            expect(response.body)
+                .to.have.property('total')
+                .to.be.a('number')
+                .and.be.equal(totalResutls) // to check
+
+            expect(response.body)
+                .to.have.property('links')
+                .to.be.a('array')
+                .and.be.length(pages + 2)
+
+            response.body.links.forEach((item) => {
+                if (item.url === null) {
+                    expect(item).to.contain({
+                        url: null,
+                        label: 'Previous',
+                        active: false,
+                    })
+                } else {
+                    expect(item).to.contain({
+                        url: `${domain}/facts?page=${count <= 4 ? count : 2}`,
+                        label: count <= 4 ? count.toString() : 'Next',
+                        active: count == 1 ? true : false,
+                    })
+
+                    count++
+                }
+            })
+        })
+    })
 })
