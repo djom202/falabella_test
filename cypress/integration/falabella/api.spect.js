@@ -132,10 +132,6 @@ describe('Cat Fact API', () => {
                 .to.be.a('string')
                 .and.be.equal(`${domain}/facts`)
             expect(response.body)
-                .to.have.property('per_page')
-                .to.be.a('string')
-                .and.be.equal(limit.toString())
-            expect(response.body)
                 .to.have.property('prev_page_url')
                 .to.be.equal(null)
             expect(response.body)
@@ -169,6 +165,11 @@ describe('Cat Fact API', () => {
                     count++
                 }
             })
+
+            expect(response.body)
+                .to.have.property('per_page')
+                .to.be.a('number')
+                .and.be.equal(limit)
         })
     })
 
@@ -316,7 +317,7 @@ describe('Cat Fact API', () => {
             expect(response.body)
                 .to.have.property('total')
                 .to.be.a('number')
-                .and.be.equal(98) // to check
+                .and.be.equal(98)
 
             expect(response.body)
                 .to.have.property('links')
