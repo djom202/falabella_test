@@ -1,0 +1,4 @@
+cypress/integration/1-getting-started/todo.spec.js
+cypress/integration/2-advanced-examples/*
+cypress/plugins/index.js
+cypress/fixtures/credentials.json
