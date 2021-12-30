@@ -1,1 +1,5 @@
-{}
+{
+    "baseUrl": "https://www.falabella.com",
+    "waitForAnimations": false,
+    "animationDistanceThreshold": 50
+}
