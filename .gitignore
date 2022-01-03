@@ -1,6 +1,34 @@
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+package-lock.json
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env
+
+# System Files
+.DS_Store
+
+# Cypress Files
+cypress/fixtures/example.json
 cypress/integration/1-getting-started/todo.spec.js
 cypress/integration/2-advanced-examples/*
 cypress/plugins/index.js
 cypress/fixtures/credentials.json
-node_modules
-package-lock.json
